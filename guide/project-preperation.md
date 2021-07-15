@@ -13,7 +13,7 @@ Querydsl을 사용하기 위해 프로젝트 설정부터 차근차근 달려봅
 
 ### build.gradle
 
-위와 같이 설정하셨다면 build.gradle 파일이 아래 처럼 작성되었을텐데요,
+위와 같이 설정하셨다면 `build.gradle` 파일이 아래 처럼 작성되었을텐데요,
 
 ```groovy
 plugins {
@@ -51,7 +51,7 @@ test {
 
 ```
 
-여기에 Querydsl 사용을 위한 설정들을 추가해야 합니다.
+여기에 `Querydsl` 사용을 위한 설정들을 추가해야 합니다.
 
 ```groovy
 plugins {
@@ -176,7 +176,7 @@ BUILD SUCCESSFUL in 4s
 2 actionable tasks: 2 executed
 ```
 
-로그에서 BUILD SUCCESSFUL를 확인하셨다면 아까 지정한 경로를 확인해봅시다.
+로그에서 **BUILD SUCCESSFUL**를 확인하셨다면 아까 지정한 경로를 확인해봅시다.
 
 프로젝트 하위 디렉토리 중 `build/generated/querydsl` 여기 진입하면 아까 생성한 `Item Entity`가 `QItem`으로 변해있는 것을 확인할 수 있습니다.
 
@@ -225,11 +225,11 @@ public class QItem extends EntityPathBase<Item> {
 
 그리고 `build`시에 포함되므로 굳이 `git`에 포함시킬 필요가 없습니다.
 
-저 같은 경우 프로젝트를 먼저 만들고 프로젝트 내에서 `git init` 명령어를 통해 `git nature`를 생성하는데 그 때 `.gitignore` 파일에 build 경로가 포함이 되어있어서 신경쓸 필요가 없긴한데, 그렇지 않은 분들은 `git`으로 소스 코드를 관리할 땐 반드시 해당 경로를 무시하도록 처리해주셔야 합니다.
+저 같은 경우 프로젝트를 먼저 만들고 프로젝트 내에서 `git init` 명령어를 통해 `git nature`를 생성하는데 그 때 `.gitignore` 파일에 `build` 경로가 포함이 되어있어서 신경쓸 필요가 없긴한데, 그렇지 않은 분들은 `git`으로 소스 코드를 관리할 땐 반드시 해당 경로를 무시하도록 처리해주셔야 합니다.
 
 특히 지금 처럼 `build` 경로로 설정하지 않고 `src` 경로나 다른 경로로 설정해 `.gitignore`에서 추가로 설정해야 하는 일이 없게 기본적인 설정을 따라주시는 게 편리합니다.
 
-그럼 Querydsl을 이용해 정상적으로 쿼리를 수행하는지 확인해보겠습니다.
+그럼 `Querydsl`을 이용해 정상적으로 쿼리를 수행하는지 확인해보겠습니다.
 
 ```java
 package io.lcalmsky.querydsl.domain;
@@ -267,14 +267,14 @@ class ItemTest {
 }
 ```
 
-> (1) `JPAQueryFactory`를 생성합니다. 이 때 생성자로 `EntityManager`를 주입해줍니다.
-> (2) `QItem` 객체를 생성합니다. 생성자에는 `Entity`의 `alias`로 사용할 변수명을 입력합니다.
-> (3) `JPQL`을 작성하듯이 자바 코드로 쿼리를 작성합니다.
-> (4) `DB`에 저장된 데이터와 다시 조회해 온 데이터가 동일한지 확인합니다.
+> (1) `JPAQueryFactory`를 생성합니다. 이 때 생성자로 `EntityManager`를 주입해줍니다.  
+> (2) `QItem` 객체를 생성합니다. 생성자에는 `Entity`의 `alias`로 사용할 변수명을 입력합니다.  
+> (3) `JPQL`을 작성하듯이 자바 코드로 쿼리를 작성합니다.  
+> (4) `DB`에 저장된 데이터와 다시 조회해 온 데이터가 동일한지 확인합니다.  
 
 잘 동작했는지 확인하기 위해 아래 설정을 추가해줍니다.
 
-H2 데이터베이스가 실행되며 테이블을 직접 생성하고 포매팅된 `SQL` 로그를 확인할 수 있기 위함입니다.
+`H2 데이터베이스`가 실행되며 테이블을 직접 생성하고 포매팅된 `SQL` 로그를 확인할 수 있기 위함입니다.
 
 ```yaml
 spring:
@@ -319,9 +319,7 @@ logging:
 
 아까 `QItem` 클래스를 유심히 본 분이라면 굳이 `new`를 사용하지 않아도 객체를 사용할 수 있다는 것을 눈치채셨을 텐데요, `QItem.hello`로 `static final`로 선언된 객체에 접근할 수 있습니다.
 
----
-
-이렇게 Querydsl을 사용하기위한 프로젝트 설정 및 간단한 테스트를 해보았습니다.
+이렇게 `Querydsl`을 사용하기위한 프로젝트 설정 및 간단한 테스트를 해보았습니다.
 
 ---
 
