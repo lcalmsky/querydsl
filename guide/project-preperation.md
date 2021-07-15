@@ -180,7 +180,7 @@ BUILD SUCCESSFUL in 4s
 
 프로젝트 하위 디렉토리 중 `build/generated/querydsl` 여기 진입하면 아까 생성한 `Item Entity`가 `QItem`으로 변해있는 것을 확인할 수 있습니다.
 
-![](https://raw.githubusercontent.com/lcalmsky/querydsl/guide/qitem.png)
+![](https://raw.githubusercontent.com/lcalmsky/querydsl/master/guide/qitem.png)
 
 `QItem.java` 파일을 열어보면
 
