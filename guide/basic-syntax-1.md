@@ -183,10 +183,10 @@ queryFactory.selectFrom(player);
 void simpleQuerydslWithWhereClauseTest() {
     // given
     JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-    Player founded = queryFactory.selectFrom(QPlayer.player)
-        .where(QPlayer.player.name.like("%Son")
-            .and(QPlayer.player.age.lt(30))
-            .and(QPlayer.player.team.name.ne("Manchester City F.C.")))
+    Player founded = queryFactory.selectFrom(player)
+        .where(player.name.like("%Son")
+            .and(player.age.lt(30))
+            .and(player.team.name.ne("Manchester City F.C.")))
         .fetchOne();
     // then
     assertNotNull(founded);
@@ -201,10 +201,10 @@ equals(==, `eq`), not equals(!=, `ne`), `like`, less than(<, `lt`) 등 `SQL`로 
 `and` 조건을 사용하는 경우 `method chaning` 방식대신 `콤마(,)`를 이용해 파라미터를 분리하여 작성해도 되는데 이 방식은 동적 쿼리를 작성할 때 매우 편리합니다.
 
 ```java
-Player founded = queryFactory.selectFrom(QPlayer.player)
-    .where(QPlayer.player.name.like("%Son"),
-        QPlayer.player.age.lt(30),
-        QPlayer.player.team.name.ne("Manchester City F.C."))
+Player founded = queryFactory.selectFrom(player)
+    .where(player.name.like("%Son"),
+        player.age.lt(30),
+        player.team.name.ne("Manchester City F.C."))
     .fetchOne();
 ```
 
