@@ -94,8 +94,8 @@ logging:
     org.hibernate.SQL: debug # (3)
 ```
 
-> (1) SQL을 정렬된 형태의 로그로 출력합니다.  
-> (2) JPQL을 로그로 출력합니다.  
+> (1) `SQL`을 정렬된 형태의 로그로 출력합니다.  
+> (2) `JPQL`을 로그로 출력합니다.  
 > (3) `org.hibernate.SQL`의 로그 레벨을 `debug`로 지정해야 로그가 출력됩니다.
 
 테스트를 실행해서 로그를 확인해볼까요?
@@ -241,26 +241,26 @@ Player founded = queryFactory.selectFrom(player)
 
 제공하는 검색 조건은 JPQL과 동일하고 아래 처럼 표현할 수 있습니다.
 
-* eq("something"):  =
-* ne("something"):  !=
-* eq("something").not():  !=
-* like("%something%"):  like
-* startsWith("something"):  like 'something%'
-* contains("something"):  like '%something%'
-* isNull():  is null
-* isNotNull():  is not null
-* isEmpty():  길이가 0
-* isNotEmpty():  길이가 0이 아님
-* in("foo", "bar"):  in("foo", "bar")
-* notIn("foo", "bar"):  not in("foo", "bar")
-* in("foo", "bar").not():  not in("foo", "bar")
-* between(20, 30):  between 20, 30
-* notBetween(20, 30):  not between 20, 30
-* between(20, 30).not():  not between 20, 30 
-* gt(28):  > 28
-* goe(28):  >= 28 
-* lt(28):  < 28
-* loe(28):  <= 28
+* `eq("something")`: = 'something'
+* `ne("something")`: != 'something'
+* `eq("something").not()`: != 'something'
+* `like("%something")`: like '%something'
+* `startsWith("something")`: like 'something%'
+* `contains("something")`: like '%something%'
+* `isNull()`: is null
+* `isNotNull()`: is not null
+* `isEmpty()`: 길이가 0
+* `isNotEmpty()`: 길이가 0이 아님
+* `in("foo", "bar")`: in("foo", "bar")
+* `notIn("foo", "bar")`: not in("foo", "bar")
+* `in("foo", "bar").not()`: not in("foo", "bar")
+* `between(20, 30)`: between 20, 30
+* `notBetween(20, 30)`: not between 20, 30
+* `between(20, 30).not()`: not between 20, 30 
+* `gt(28)`: > 28
+* `goe(28)`: >= 28 
+* `lt(28)`: < 28
+* `loe(28)`: <= 28
 
 ### 결과 매핑
 

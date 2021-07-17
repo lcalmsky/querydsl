@@ -1,6 +1,7 @@
 package io.lcalmsky.querydsl.domain;
 
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 import static io.lcalmsky.querydsl.domain.QPlayer.player;
+import static io.lcalmsky.querydsl.domain.QTeam.team;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -20,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class PlayerTest {
     @Autowired
     EntityManager entityManager;
+    private JPAQueryFactory queryFactory;
 
     @BeforeEach
     void setup() {
@@ -37,6 +40,7 @@ class PlayerTest {
         entityManager.persist(heungminSon);
         entityManager.persist(kevinDeBruyne);
         entityManager.persist(raheemSterling);
+        queryFactory = new JPAQueryFactory(entityManager);
     }
 
     @Test
@@ -83,13 +87,70 @@ class PlayerTest {
     void simpleQuerydslWithWhereClauseTest() {
         // given
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-        Player founded = queryFactory.selectFrom(QPlayer.player)
-                .where(QPlayer.player.name.like("%Son"),
-                        QPlayer.player.age.lt(30),
-                        QPlayer.player.team.name.ne("Manchester City F.C."))
+        Player founded = queryFactory.selectFrom(player)
+                .where(player.name.like("%Son"),
+                        player.age.lt(30),
+                        player.team.name.ne("Manchester City F.C."))
                 .fetchOne();
         // then
         assertNotNull(founded);
         assertEquals("Heungmin Son", founded.getName());
+    }
+
+    @Test
+    void simpleQuerydslWithSortTest() {
+        // given
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+        List<Player> players = queryFactory.selectFrom(player)
+                .orderBy(player.age.desc(), player.name.asc().nullsLast())
+                .fetch();
+        // then
+        assertEquals("Kevin De Bruyne", players.get(0).getName());
+        assertEquals("Raheem Shaquille Sterling", players.get(3).getName());
+    }
+
+    @Test
+    void simpleQuerydslWithPaging() {
+        // given
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+        List<Player> players = queryFactory.selectFrom(player)
+                .orderBy(player.name.asc())
+                .offset(1)
+                .limit(2)
+                .fetch();
+        // then
+        assertEquals(2, players.size());
+    }
+
+    @Test
+    void simpleQuerydslWithPaging2() {
+        // given
+        QueryResults<Player> players = queryFactory.selectFrom(player)
+                .orderBy(player.name.asc())
+                .offset(1)
+                .limit(2)
+                .fetchResults();
+        // then
+        assertEquals(4, players.getTotal());
+        assertEquals(2, players.getResults().size());
+    }
+
+    @Test
+    void simpleQuerydslWithFunction() {
+        Tuple players = queryFactory.select(player.count(), player.age.sum(), player.age.avg(), player.age.max(), player.age.min())
+                .from(player)
+                .fetchOne();
+        System.out.println(players);
+    }
+
+    @Test
+    void simpleQueryDslWithAggregation() {
+        List<Tuple> ages = queryFactory.select(team.name, player.age.avg())
+                .from(player)
+                .join(player.team, team)
+                .groupBy(team.name)
+                .having(player.age.avg().goe(28))
+                .fetch();
+        System.out.println(ages);
     }
 }
