@@ -39,3 +39,4 @@ out/
 ###
 /test.mv.db
 .DS_Store
+/test.trace.db
