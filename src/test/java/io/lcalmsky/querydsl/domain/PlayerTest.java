@@ -144,7 +144,7 @@ class PlayerTest {
     }
 
     @Test
-    void simpleQueryDslWithAggregation() {
+    void simpleQuerydslWithAggregation() {
         List<Tuple> ages = queryFactory.select(team.name, player.age.avg())
                 .from(player)
                 .join(player.team, team)
@@ -152,5 +152,75 @@ class PlayerTest {
                 .having(player.age.avg().goe(28))
                 .fetch();
         System.out.println(ages);
+    }
+
+    @Test
+    void simpleQuerydslWithJoin() {
+        List<Player> players = queryFactory.select(player)
+                .from(player)
+                .join(player.team, team)
+                .fetch();
+        players.forEach(p -> System.out.printf("%s %s%n", p, p.getTeam()));
+    }
+
+    @Test
+    void simpleQuerydslWithThetaJoin() {
+        List<Player> players = queryFactory.select(player)
+                .from(player, team)
+                .where(player.team.name.eq(team.name))
+                .fetch();
+        players.forEach(p -> System.out.printf("%s %s%n", p, p.getTeam()));
+    }
+
+    @Test
+    void simpleQuerydslWithLeftJoinOn() {
+        List<Tuple> tuples = queryFactory.select(player, team)
+                .from(player)
+                .leftJoin(player.team, team)
+                .on(team.name.eq("Tottenham Hotspur F.C."))
+                .fetch();
+        tuples.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithJoinOn() {
+        List<Tuple> tuples = queryFactory.select(player, team)
+                .from(player)
+                .join(player.team, team)
+                .on(team.name.eq("Tottenham Hotspur F.C."))
+                .fetch();
+        tuples.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithJoinWithoutOn() {
+        List<Tuple> tuples = queryFactory.select(player, team)
+                .from(player)
+                .join(player.team, team)
+                .where(team.name.eq("Tottenham Hotspur F.C."))
+                .fetch();
+        tuples.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithOuterJoinOn() {
+        List<Tuple> tuples = queryFactory.select(player, team)
+                .from(player)
+                .leftJoin(team)
+                .on(player.team.name.eq(team.name))
+                .fetch();
+        tuples.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithFetchJoin() {
+        Player founded = queryFactory.selectFrom(player)
+                .join(player.team, team)
+                .fetchJoin()
+                .where(player.name.eq("Heungmin Son"))
+                .fetchOne();
+        assertNotNull(founded);
+        assertNotNull(founded.getTeam());
+        System.out.println(founded + " " + founded.getTeam());
     }
 }
