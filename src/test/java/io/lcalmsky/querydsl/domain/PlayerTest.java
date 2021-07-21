@@ -2,6 +2,9 @@ package io.lcalmsky.querydsl.domain;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -222,5 +225,111 @@ class PlayerTest {
         assertNotNull(founded);
         assertNotNull(founded.getTeam());
         System.out.println(founded + " " + founded.getTeam());
+    }
+
+    @Test
+    void simpleQuerydslWithSubQuery1() {
+        QPlayer subPlayer = new QPlayer("subPlayer");
+
+        Player founded = queryFactory
+                .selectFrom(player)
+                .where(player.age.eq(
+                        JPAExpressions
+                                .select(subPlayer.age.max())
+                                .from(subPlayer)))
+                .fetchOne();
+
+        assertNotNull(founded);
+        assertEquals(founded.getName(), "Kevin De Bruyne");
+    }
+
+    @Test
+    void simpleQuerydslWithSubQuery2() {
+        QPlayer subPlayer = new QPlayer("subPlayer");
+
+        List<Player> players = queryFactory
+                .selectFrom(player)
+                .where(player.age.goe(
+                        JPAExpressions
+                                .select(subPlayer.age.avg())
+                                .from(subPlayer)))
+                .fetch();
+
+        assertNotNull(players);
+        assertEquals(2, players.size());
+    }
+
+    @Test
+    void simpleQuerydslWithSubQuery3() {
+        QPlayer subPlayer = new QPlayer("subPlayer");
+
+        List<Player> players = queryFactory
+                .selectFrom(player)
+                .where(player.age.in(
+                        JPAExpressions
+                                .select(subPlayer.age)
+                                .from(subPlayer)
+                                .where(subPlayer.age.lt(29))))
+                .fetch();
+
+        assertNotNull(players);
+        assertEquals(2, players.size());
+    }
+
+    @Test
+    void simpleQuerydslWithSubQuery4() {
+        QPlayer subPlayer = new QPlayer("subPlayer");
+
+        List<Tuple> players = queryFactory
+                .select(player.name, JPAExpressions
+                        .select(subPlayer.age.avg())
+                        .from(subPlayer))
+                .from(player)
+                .fetch();
+
+        System.out.println("players = " + players);
+    }
+
+    @Test
+    void simpleQuerydslWithSimpleCase() {
+        List<String> nations = queryFactory
+                .select(player.name
+                        .when("Heungmin Son").then("대한민국")
+                        .when("Harry Kane").then("잉글랜드")
+                        .otherwise("기타"))
+                .from(player)
+                .fetch();
+        nations.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithComplexCase() {
+        List<String> nations = queryFactory
+                .select(new CaseBuilder()
+                        .when(player.name.like("%Son")).then("대한민국")
+                        .otherwise("기타")
+                )
+                .from(player)
+                .fetch();
+        nations.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithConstants() {
+        List<Tuple> age = queryFactory
+                .select(player.name, Expressions.constant("NAME"))
+                .from(player)
+                .fetch();
+        age.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithConcat() {
+        List<String> nameWithAge = queryFactory
+                .select(player.name.concat(": ").concat(player.age.stringValue()))
+                .from(player)
+                .orderBy(player.age.desc())
+                .fetch();
+        nameWithAge.forEach(System.out::println);
     }
 }
