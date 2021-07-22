@@ -6,7 +6,7 @@
 
 ### Projection
 
-프로젝션(Projection)은 select 절에서 어떤 컬럼들을 조회할지 대상을 지정하는 것을 말합니다.
+프로젝션(Projection)은 `select` 절에서 어떤 컬럼들을 조회할지 대상을 지정하는 것을 말합니다.
 
 프로젝션 대상이 하나일 경우는 타입이 명확하기 때문에 해당 `Generic Type`이 해당 컬럼 타입에 맞게 지정됩니다.
 
@@ -125,11 +125,11 @@ Raheem Shaquille Sterling: 26
 
 조회 결과를 클래스에 매핑하기 위해 세 가지 접근 방법을 제공합니다.
 
-* Property: setter 사용, 기본 생성자 사용
-* Field: setter 필요 없음, 기본 생성자 필요 없음, 필드와 매핑 
-* Constructor: @AllArgsConstructor 필요, setter 필요 없음 
+* Property: `setter` 사용, 기본 생성자 사용
+* Field: `setter` 필요 없음, 기본 생성자 필요 없음, 필드와 매핑 
+* Constructor: `@AllArgsConstructor` 필요, `setter` 필요 없음 
 
-먼저 Property를 이용한 방법을 살펴보겠습니다.
+먼저 `Property`를 이용한 방법을 살펴보겠습니다.
 
 먼저 매핑시킬 클래스를 생성했습니다.
 
@@ -226,7 +226,7 @@ io.lcalmsky.querydsl.domain.PlayerDefaultData@1dbfbd94
 io.lcalmsky.querydsl.domain.PlayerDefaultData@ec1b776
 ```
 
-@Data를 없앴기 때문에 toString()이 제대로 동작하지 않았으나 어쨌든 제대로 조회해오는 것을 확인할 수 있습니다.
+`@Data`를 없앴기 때문에 `toString()`이 제대로 동작하지 않았으나 어쨌든 제대로 조회해오는 것을 확인할 수 있습니다.
 
 마지막으로 생성자를 이용한 방식입니다.
 
@@ -302,7 +302,7 @@ public class PlayerDefaultData {
 
 `PlayerDefaultData`에서는 `Player Entity`와 동일한 필드명을 사용했는데, 필드명이 다를 경우 다시 이 세 가지를 구분해서 사용해야 합니다.
 
-먼저 PlayerData라는 클래스를만들어 필드명을 다르게 해보겠습니다.
+먼저 `PlayerData`라는 클래스를만들어 필드명을 다르게 해보겠습니다.
 
 ```java
 package io.lcalmsky.querydsl.domain;
@@ -420,9 +420,9 @@ PlayerData(playerName=Raheem Shaquille Sterling, playerAge=26)
 
 쿼리에서 `as`를 이용해 매핑될 필드명을 사용한 것을 확인할 수 있고 결과도 정확하게 출력됩니다.
 
-서브 쿼리에서도 ExpressionUtils.as()를 이용해 조회한 결과를 매핑할 필드의 `alias`를 지정할 수 있습니다만 서브 쿼리를 자주 사용할 일 자체가 없는 것이 바람직하기 때문에 설명을 생략하겠습니다.
+서브 쿼리에서도 `ExpressionUtils.as()`를 이용해 조회한 결과를 매핑할 필드의 `alias`를 지정할 수 있습니다만 서브 쿼리를 자주 사용할 일 자체가 없는 것이 바람직하기 때문에 설명을 생략하겠습니다.
 
-필드도 동일하게 ExpressionUtils.as()를 사용할 수 있지만 필드명 뒤에 as()를 사용하는 것이 더 직관적이라 굳이 사용할 필요는 없을 거 같습니다.
+필드도 동일하게 `ExpressionUtils.as()`를 사용할 수 있지만 필드명 뒤에 `as()`를 사용하는 것이 더 직관적이라 굳이 사용할 필요는 없을 거 같습니다.
 
 ```java
 queryFactory
@@ -506,7 +506,7 @@ PlayerWithTeamData(name=Raheem Shaquille Sterling, age=26, teamName=Manchester C
 
 다음으로 생성자와 `@QueryProjection` 애너테이션을 활용해서 클래스에 매핑해보겠습니다.
 
-먼저 PlayerDefaultData 클래스를 변경해줍니다.
+먼저 `PlayerDefaultData` 클래스를 변경해줍니다.
 
 ```java
 package io.lcalmsky.querydsl.domain;
