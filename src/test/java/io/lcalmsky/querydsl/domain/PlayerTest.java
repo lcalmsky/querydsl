@@ -2,6 +2,7 @@ package io.lcalmsky.querydsl.domain;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -331,5 +332,85 @@ class PlayerTest {
                 .orderBy(player.age.desc())
                 .fetch();
         nameWithAge.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithOnlyOneProjection() {
+        List<String> playerNames = queryFactory.select(player.name)
+                .from(player)
+                .fetch();
+        playerNames.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithMultiProjection() {
+        List<Tuple> tuples = queryFactory.select(player.name, player.age)
+                .from(player)
+                .fetch();
+        tuples.forEach(tuple -> System.out.printf("%s: %d%n", tuple.get(player.name), tuple.get(player.age)));
+    }
+
+    @Test
+    void simpleQuerydslWithProjectionUsingProperties() {
+        List<PlayerDefaultData> players = queryFactory
+                .select(Projections.bean(PlayerDefaultData.class, player.name, player.age))
+                .from(player)
+                .fetch();
+        players.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithProjectionUsingFields() {
+        List<PlayerDefaultData> players = queryFactory
+                .select(Projections.fields(PlayerDefaultData.class, player.name, player.age))
+                .from(player)
+                .fetch();
+        players.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithProjectionUsingConstructor() {
+        List<PlayerDefaultData> players = queryFactory
+                .select(Projections.constructor(PlayerDefaultData.class, player.name, player.age))
+                .from(player)
+                .fetch();
+        players.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithProjectionUsingBeanWithDifferentFieldNames() {
+        List<PlayerData> players = queryFactory
+                .select(Projections.bean(PlayerData.class, player.name.as("playerName"), player.age.as("playerAge")))
+                .from(player)
+                .fetch();
+        players.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithProjectionUsingFieldsWithDifferentFieldNames() {
+        List<PlayerData> players = queryFactory
+                .select(Projections.fields(PlayerData.class, player.name, player.age))
+                .from(player)
+                .fetch();
+        players.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithProjectionUsingJoin() {
+        List<PlayerWithTeamData> players = queryFactory
+                .select(Projections.bean(PlayerWithTeamData.class, player.name, player.age, player.team.name.as("teamName")))
+                .from(player)
+                .join(player.team, team)
+                .fetch();
+        players.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithProjectionUsingQueryProjection() {
+        List<PlayerDefaultData> players = queryFactory
+                .select(new QPlayerDefaultData(player.name, player.age))
+                .from(player)
+                .fetch();
+        players.forEach(System.out::println);
     }
 }
