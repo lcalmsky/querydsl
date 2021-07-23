@@ -169,7 +169,7 @@ Player(id=6, name=Raheem Shaquille Sterling, age=26)
 > (3) `age` 조건만 생성되었습니다.  
 > (4) 두 조건이 모두 없으므로 `where` 절이 생성되지 않았습니다.  
 
-where 메서드는 `Predicate`가 모두 `null`일 경우 생성되지 않아 파라미터 존재 여부에 따라 자유롭게 조건을 구성할 수 있습니다.
+`where` 메서드는 `Predicate`가 모두 `null`일 경우 생성되지 않아 파라미터 존재 여부에 따라 자유롭게 조건을 구성할 수 있습니다.
 
 ### where 메서드 파라미터 사용
 
@@ -308,7 +308,7 @@ private <T> Predicate condition(T value, Function<T, Predicate> function) {
 
 단, 이렇게 전달하게되면 모든 조건이 `and`로 묶이게 됩니다. 
 
-`where`절에 `Predicate`를 여러 개 넘길 경우 기본 동작이 `and`이기 때문인데요, where 절 구현 내용을 쭉 따라서 올라가보면,
+`where`절에 `Predicate`를 여러 개 넘길 경우 기본 동작이 `and`이기 때문인데요, `where` 절 구현 내용을 쭉 따라서 올라가보면,
 
 **QueryBase.java**
 ```java
