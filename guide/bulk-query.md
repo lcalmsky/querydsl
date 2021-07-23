@@ -203,20 +203,20 @@ class PlayerTest {
 ```java
 @Test
 void simpleQuerydslWithBulkUpdate2(){
-        // when
-        long affectedRows=queryFactory
+    // when
+    long affectedRows=queryFactory
         .update(player)
         .set(player.weeklySalary,player.weeklySalary.add(100000)) // (1)
         .where(player.weeklySalary.loe(200000))
         .execute();
-        entityManager.flush();
-        entityManager.clear();
-        // then
-        List<Player> players=queryFactory.selectFrom(player)
-        .fetch();
-        assertEquals(2,affectedRows);
-        players.forEach(System.out::println);
-        }
+    entityManager.flush();
+    entityManager.clear();
+    // then
+    List<Player> players=queryFactory.selectFrom(player)
+       .fetch();
+    assertEquals(2,affectedRows);
+    players.forEach(System.out::println);
+}
 ```
 
 > (1) `add`를 사용해 10만 유로만큼 더해줬습니다.
@@ -260,20 +260,20 @@ Player(id=6, name=Raheem Shaquille Sterling, age=26, inSeason=true, weeklySalary
 ```java
 @Test
 void simpleQuerydslWithBulkUpdate3(){
-        // when
-        long affectedRows=queryFactory
+    // when
+    long affectedRows=queryFactory
         .update(player)
         .set(player.weeklySalary,player.weeklySalary.multiply(1.2)) // (1)
         .where(player.weeklySalary.loe(200000))
         .execute();
-        entityManager.flush();
-        entityManager.clear();
-        // then
-        List<Player> players=queryFactory.selectFrom(player)
+    entityManager.flush();
+    entityManager.clear();
+    // then
+    List<Player> players=queryFactory.selectFrom(player)
         .fetch();
-        assertEquals(2,affectedRows);
-        players.forEach(System.out::println);
-        }
+    assertEquals(2,affectedRows);
+    players.forEach(System.out::println);
+}
 ```
 
 > (1) `add` 대신 `multiply`를 사용하였고 20% 상승을 위해 1.2를 곱해줬습니다.
@@ -316,12 +316,12 @@ Player(id=6, name=Raheem Shaquille Sterling, age=26, inSeason=true, weeklySalary
 
 그 이유는 바로 `multiply` 메서드를 추적해보면 알 수 있습니다.
 
-멀리 갈 필요도 없이 NumberExpression 클래스만 확인해보면 되는데요,
+멀리 갈 필요도 없이 `NumberExpression` 클래스만 확인해보면 되는데요,
 
 ```java
 public<N extends Number & Comparable<N>> NumberExpression<T> multiply(N right){
-        return Expressions.numberOperation(getType(),Ops.MULT,mixin,ConstantImpl.create(right));
-        }
+    return Expressions.numberOperation(getType(),Ops.MULT,mixin,ConstantImpl.create(right));
+}
 ```
 
 `multiply` 메서드는 `Number`의 자식클래스 `Generic` 타입을 파라미터로 받고있습니다.
@@ -335,20 +335,20 @@ public<N extends Number & Comparable<N>> NumberExpression<T> multiply(N right){
 ```java
 @Test
 void simpleQuerydslWithBulkUpdate3(){
-        // when
-        long affectedRows=queryFactory
+    // when
+    long affectedRows=queryFactory
         .update(player)
         .set(player.weeklySalary,player.weeklySalary.multiply(2)) // (1)
         .where(player.weeklySalary.loe(200000))
         .execute();
-        entityManager.flush();
-        entityManager.clear();
-        // then
-        List<Player> players=queryFactory.selectFrom(player)
+    entityManager.flush();
+    entityManager.clear();
+    // then
+    List<Player> players=queryFactory.selectFrom(player)
         .fetch();
-        assertEquals(2,affectedRows);
-        players.forEach(System.out::println);
-        }
+    assertEquals(2,affectedRows);
+    players.forEach(System.out::println);
+}
 ```
 
 > (1) `multiply` 메서드에 `weeklySalary`와 같은 정수 타입인 2를 전달하였습니다.
@@ -374,21 +374,21 @@ Player(id=6, name=Raheem Shaquille Sterling, age=26, inSeason=true, weeklySalary
 ```java
 @Test
 void simpleQuerydslWithBulkDelete(){
-        // when
-        long affectedRows=queryFactory
+    // when
+    long affectedRows=queryFactory
         .delete(player) // (1)
         .where(player.weeklySalary.goe(200000))
         .execute();
-        // then
-        entityManager.flush();
-        entityManager.clear();
-        assertEquals(affectedRows,3); // (2)
-        List<Player> players=queryFactory
+    // then
+    entityManager.flush();
+    entityManager.clear();
+    assertEquals(affectedRows,3); // (2)
+    List<Player> players=queryFactory
         .selectFrom(player)
         .fetch();
-        assertEquals(1,players.size()); // (3)
-        System.out.println("players = "+players);
-        }
+    assertEquals(1,players.size()); // (3)
+    System.out.println("players = "+players);
+}
 ```
 
 > (1) `update` 대신 `delete`를 사용하고 나머지는 동일합니다.  
@@ -430,8 +430,8 @@ players = [Player(id=4, name=Heungmin Son, age=29, inSeason=true, weeklySalary=1
 
 동적으로 조건이 변하는 상황이라면 더욱 더 적극적으로 사용할 수 있겠네요.
 
-다음 포스팅에서는 SQL Function을 사용하는 부분을 다뤄보겠습니다. 🙋
+다음 포스팅에서는 `SQL Function`을 사용하는 부분을 다뤄보겠습니다. 🙋
 
 ---
 
-> 이번 포스팅을 작성하다가 깨달은 것인데.. 그동안 `org.springframework.transaction.annotation.Transactional` 대신 `javax.transaction.Transactional`를 사용하고 있었더군요 ㅜㅜ 검증보다는 결과를 출력하는 방식으로 테스트 클래스를 작성하다보니 뭐가 잘못됐는지도 한참동안 모르고 있었네요.. 테스트 코드를 제대로 작성하는 것의 소중함을 이렇게 또 깨달았습니다.😥 
+> 이번 포스팅을 작성하다가 깨달은 것인데.. 그동안 `org.springframework.transaction.annotation.Transactional` 대신 `javax.transaction.Transactional`를 사용하고 있었더군요 ㅜㅜ 검증보다는 결과를 출력하는 방식으로 테스트 클래스를 작성하다보니 뭐가 잘못됐는지도 한참동안 모르고 있었네요.. 테스트 코드를 제대로 작성하는 것의 소중함을 이렇게 또 깨달았습니다.😥 후딱 기존 포스팅도 다 수정해놓아야겠네요 🏃
