@@ -4,8 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.Optional;
@@ -26,6 +24,8 @@ public class Player {
     @JoinColumn(name = "team_id")
     @ToString.Exclude
     private Team team;
+    private Boolean inSeason;
+    private Integer weeklySalary;
 
     public Player(String name) {
         this(name, 0, null);
@@ -41,11 +41,29 @@ public class Player {
         if (team != null) {
             changeTeam(team);
         }
+        this.inSeason = false;
+        this.weeklySalary = 0;
     }
 
     private void changeTeam(Team team) {
         Optional.ofNullable(this.team).ifPresent(t -> t.removeIfExist(this));
         this.team = team;
         team.getPlayers().add(this);
+    }
+
+    public void begins() {
+        this.inSeason = true;
+    }
+
+    public void over() {
+        this.inSeason = false;
+    }
+
+    public void contactSalary(int weeklySalary) {
+        this.weeklySalary = weeklySalary;
+    }
+
+    public void raiseSalary(float rate) {
+        this.weeklySalary = (int) (weeklySalary + weeklySalary * rate);
     }
 }

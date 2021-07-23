@@ -14,10 +14,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -42,9 +43,17 @@ class PlayerTest {
         entityManager.persist(manchesterCity);
 
         Player harryKane = new Player("Harry Kane", 27, tottenhamHotspur);
+        harryKane.contactSalary(200000);
+        harryKane.begins();
         Player heungminSon = new Player("Heungmin Son", 29, tottenhamHotspur);
+        heungminSon.contactSalary(140000);
+        heungminSon.begins();
         Player kevinDeBruyne = new Player("Kevin De Bruyne", 30, manchesterCity);
+        kevinDeBruyne.contactSalary(350000);
+        kevinDeBruyne.begins();
         Player raheemSterling = new Player("Raheem Shaquille Sterling", 26, manchesterCity);
+        raheemSterling.contactSalary(300000);
+        raheemSterling.begins();
 
         entityManager.persist(harryKane);
         entityManager.persist(heungminSon);
@@ -472,5 +481,74 @@ class PlayerTest {
         return Optional.ofNullable(value)
                 .map(function)
                 .orElse(null);
+    }
+
+    @Test
+    void simpleQuerydslWithBulkUpdate() {
+        // when
+        long affectedRows = queryFactory
+                .update(player)
+                .set(player.inSeason, false)
+                .execute();
+        entityManager.flush();
+        entityManager.clear();
+        // then
+        List<Boolean> actual = queryFactory
+                .select(player.inSeason)
+                .from(player)
+                .fetch();
+        assertEquals(Arrays.asList(false, false, false, false), actual);
+    }
+
+    @Test
+    void simpleQuerydslWithBulkUpdate2() {
+        // when
+        long affectedRows = queryFactory
+                .update(player)
+                .set(player.weeklySalary, player.weeklySalary.add(100000))
+                .where(player.weeklySalary.loe(200000))
+                .execute();
+        entityManager.flush();
+        entityManager.clear();
+        // then
+        List<Player> players = queryFactory.selectFrom(player)
+                .fetch();
+        assertEquals(2, affectedRows);
+        players.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithBulkUpdate3() {
+        // when
+        long affectedRows = queryFactory
+                .update(player)
+                .set(player.weeklySalary, player.weeklySalary.multiply(2))
+                .where(player.weeklySalary.loe(200000))
+                .execute();
+        entityManager.flush();
+        entityManager.clear();
+        // then
+        List<Player> players = queryFactory.selectFrom(player)
+                .fetch();
+        assertEquals(2, affectedRows);
+        players.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithBulkDelete() {
+        // when
+        long affectedRows = queryFactory
+                .delete(player)
+                .where(player.weeklySalary.goe(200000))
+                .execute();
+        // then
+        entityManager.flush();
+        entityManager.clear();
+        assertEquals(affectedRows, 3);
+        List<Player> players = queryFactory
+                .selectFrom(player)
+                .fetch();
+        assertEquals(1, players.size());
+        System.out.println("players = " + players);
     }
 }
