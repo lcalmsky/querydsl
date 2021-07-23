@@ -1,8 +1,11 @@
 package io.lcalmsky.querydsl.domain;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -14,7 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 import static io.lcalmsky.querydsl.domain.QPlayer.player;
 import static io.lcalmsky.querydsl.domain.QTeam.team;
@@ -412,5 +418,59 @@ class PlayerTest {
                 .from(player)
                 .fetch();
         players.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithBooleanBuilder() {
+        // given
+        List<QueryParam> queryParams = new ArrayList<>();
+        queryParams.add(QueryParam.of("Heungmin Son", 29));
+        queryParams.add(QueryParam.of("Heungmin Son", null));
+        queryParams.add(QueryParam.of(null, 29));
+        queryParams.add(QueryParam.of(null, null));
+
+        // when
+        for (QueryParam queryParam : queryParams) {
+            List<Player> players = queryFactory
+                    .selectFrom(player)
+                    .where(whereClause(queryParam))
+                    .fetch();
+            players.forEach(System.out::println);
+        }
+    }
+
+    private Predicate whereClause(QueryParam queryParam) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        Optional.ofNullable(queryParam.getName())
+                .ifPresent(name -> booleanBuilder.and(player.name.eq(name)));
+        Optional.ofNullable(queryParam.getAge())
+                .ifPresent(age -> booleanBuilder.and(player.age.lt(age)));
+        return booleanBuilder;
+    }
+
+    @Test
+    void simpleQuerydslWithDynamicQueryUsingWhereClause() {
+        // given
+        List<QueryParam> queryParams = new ArrayList<>();
+        queryParams.add(QueryParam.of("Heungmin Son", 29));
+        queryParams.add(QueryParam.of("Heungmin Son", null));
+        queryParams.add(QueryParam.of(null, 29));
+        queryParams.add(QueryParam.of(null, null));
+
+        // when
+        for (QueryParam queryParam : queryParams) {
+            List<Player> players = queryFactory
+                    .selectFrom(player)
+                    .where(condition(queryParam.getName(), player.name::eq),
+                            condition(queryParam.getAge(), player.age::lt))
+                    .fetch();
+            players.forEach(System.out::println);
+        }
+    }
+
+    private <T> BooleanExpression condition(T value, Function<T, BooleanExpression> function) {
+        return Optional.ofNullable(value)
+                .map(function)
+                .orElse(null);
     }
 }
