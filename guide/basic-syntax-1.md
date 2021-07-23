@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;;
 
 import static io.lcalmsky.querydsl.domain.QPlayer.player; // (1)
 import static org.junit.jupiter.api.Assertions.assertEquals;
