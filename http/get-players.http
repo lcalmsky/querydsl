@@ -7,3 +7,7 @@ GET localhost:8080/v1/players?name=Heungmin%20Son
 ###
 
 GET localhost:8080/v1/players?teamName=Tottenham%20Hotspur%20F%2EC%2E
+
+###
+
+GET localhost:8080/v3/players?teamName=Tottenham%20Hotspur%20F%2EC%2E&sort=weeklySalary,asc&sort=name,asc&page=0&size=5
