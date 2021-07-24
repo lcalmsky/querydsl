@@ -1,0 +1,9 @@
+GET localhost:8080/v1/players?age=27
+
+###
+
+GET localhost:8080/v1/players?name=Heungmin%20Son
+
+###
+
+GET localhost:8080/v1/players?teamName=Tottenham%20Hotspur%20F%2EC%2E
