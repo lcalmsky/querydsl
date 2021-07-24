@@ -1,6 +1,6 @@
 ## Overview
 
-Repository for studying Querydsl and blogging 
+Repository for studying Querydsl and posting on [blog](https://jaime-note.tistory.com/category/Querydsl) 
 
 ## Guide
 
