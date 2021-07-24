@@ -22,11 +22,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import static io.lcalmsky.querydsl.domain.QPlayer.player;
 import static io.lcalmsky.querydsl.domain.QTeam.team;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -551,4 +551,31 @@ class PlayerTest {
         assertEquals(1, players.size());
         System.out.println("players = " + players);
     }
+
+    @Test
+    void simpleQuerydslWithReplaceFunction() {
+        // when
+        List<String> playerNames = queryFactory
+                .select(Expressions.stringTemplate("function('replace', {0}, {1}, {2})", player.name, "Son", "S."))
+                .from(player)
+                .fetch();
+        // then
+        assertTrue(playerNames.stream().anyMatch(name -> name.endsWith("S.")));
+        // print
+        playerNames.forEach(System.out::println);
+    }
+
+    @Test
+    void simpleQuerydslWithLowerFunction() {
+        // when
+        List<String> playerNames = queryFactory
+                .select(player.name.lower())
+                .from(player)
+                .fetch();
+        // then
+        assertTrue(playerNames.stream().allMatch(name -> Pattern.matches("[a-z ]+", name)));
+        // print
+        playerNames.forEach(System.out::println);
+    }
+
 }
