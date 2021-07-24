@@ -62,7 +62,7 @@ class PlayerQuerydslRepositoryTest {
         assertEquals(1, players.size());
 
         List<Player> playerByName = playerQuerydslRepository.findByName("Heungmin Son");
-        assertEquals(1, players.size());
+        assertEquals(1, playerByName.size());
         assertEquals("Heungmin Son", playerByName.get(0).getName());
     }
 
