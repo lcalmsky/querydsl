@@ -1,6 +1,6 @@
 ## Overview
 
-Repository for Querydsl
+Repository for studying Querydsl and blogging 
 
 ## Guide
 
