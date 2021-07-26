@@ -1,5 +1,7 @@
 package io.lcalmsky.querydsl.repository;
 
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import io.lcalmsky.querydsl.domain.Player;
 import io.lcalmsky.querydsl.domain.PlayerDetails;
 import io.lcalmsky.querydsl.domain.Team;
@@ -14,8 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
+import static io.lcalmsky.querydsl.domain.QPlayer.player;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -200,4 +204,32 @@ class PlayerRepositoryTest {
         players.forEach(System.out::println);
     }
 
+    @Test
+    void querydslPredicateExecutorTest() {
+        // given
+        Predicate ageLessThan = player.age.lt(30);
+        // when
+        Iterable<Player> playersAgeLessThan30 = playerRepository.findAll(ageLessThan);
+        List<Player> playersAgeLessThan30List = new ArrayList<>();
+        playersAgeLessThan30.forEach(playersAgeLessThan30List::add);
+        // then
+        assertEquals(6, playersAgeLessThan30List.size());
+        // print
+        playersAgeLessThan30List.forEach(System.out::println);
+    }
+
+    @Test
+    void querydslPredicateExecutorTest2() {
+        // given
+        BooleanExpression ageLessThan = player.age.lt(30);
+        BooleanExpression weeklySalaryLessThan = player.weeklySalary.lt(150000);
+        // when
+        Iterable<Player> result = playerRepository.findAll(ageLessThan.and(weeklySalaryLessThan));
+        List<Player> players = new ArrayList<>();
+        result.forEach(players::add);
+        // then
+        assertEquals(4, players.size());
+        // print
+        players.forEach(System.out::println);
+    }
 }
