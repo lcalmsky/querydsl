@@ -6,7 +6,7 @@
 
 > 사실 이 부분은 `스프링 데이터 JPA` 관련 포스팅의 복습이라고 보셔도 됩니다.
 >
-> 각 챕터에 앞서 관련 내용을 미리 읽고 오시면 도움이 될 거 같아 본격적인 설명에 앞서 링크를 먼저 첨부하겠습니다.
+> 각 챕터에 앞서 관련 내용을 미리 읽고 오시면 도움이 될 거 같아 링크를 먼저 첨부하겠습니다.
 >
 > * [스프링 데이터 JPA - Custom Repository Best Practice](https://jaime-note.tistory.com/58?category=849450)
 > * [스프링 데이터 JPA - 페이징과 정렬2(API 활용)](https://jaime-note.tistory.com/61?category=849450)
