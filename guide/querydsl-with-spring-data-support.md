@@ -30,7 +30,7 @@ public interface QuerydslPredicateExecutor<T> {
 > (3) Predicate에 매칭되는 Entity의 수를 반환합니다.  
 > (4) Predicate에 매칭되는 결과가 있는지 여부를 반환합니다.
 
-이 외에도 정렬 정보를 전달한다든지, Page를 반환하게 하는 인터페이스도 존재합니다.
+이 외에도 정렬 정보를 전달한다든지, `Page`를 반환하게 하는 인터페이스도 존재합니다.
 
 사용 방법은 간단합니다.
 
@@ -245,7 +245,7 @@ class UserController {
 
 `or`나 `like` 등 다른 기능은 사용할 수 없습니다.
 
-이럴 땐 QuerydslBinderCustomizer를 상속하여 추가로 매핑할 수 있습니다.
+이럴 땐 `QuerydslBinderCustomizer`를 상속하여 추가로 매핑할 수 있습니다.
 
 ```java
 interface UserRepository extends CrudRepository<User, String>,
